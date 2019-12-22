@@ -1,0 +1,96 @@
+#!/bin/bash
+echo "Enter full path name of vlan file"
+read vlan_file
+if [ ! -f "$vlan_file" ]; then
+    echo "No such file!" >&2
+    exit 1
+fi
+echo "Enter Full path name of Network Address File"
+read ip_file
+if [ ! -f "$ip_file" ]; then
+    echo "No such file!" >&2
+    exit 1
+fi
+
+echo "This script would create two files in your home registry which is $HOME"
+vlan_line=$( wc -l <"$vlan_file" )
+ip_line=$( wc -l <"$ip_file" )
+
+if [ $ip_line != $vlan_line ]; then 
+echo "Ensure both files have the same line number" >&2
+    exit 1
+fi
+if [[ -f $HOME/switchconfigs1 && -f $HOME/switchconfigs2 ]]; then
+    echo "It seems switch config files exists, Removing and recreating files for this session"
+	rm -rf $HOME/switchconfigs1
+        touch $HOME/switchconfigs1
+	rm -rf $HOME/switchconfigs2
+	touch $HOME/switchconfigs2
+fi
+touch $HOME/switchconfigs1
+touch $HOME/switchconfigs2
+
+if [ -a $HOME/info ]; then
+    echo "It seems $HOME/info exists, Removing and recreating file for this session"
+    rm -rf $HOME/info
+    touch $HOME/info
+fi
+touch $HOME/info
+echo "Now writing configs to $HOME/switchconfigs1 and $HOME/switchconfigs2. You can tail the output to monitor with tail -f $HOME/switchconfigs1"
+cp $vlan_file $HOME/vlan.in
+cp $ip_file $HOME/ip.in
+
+
+for (( i=1; i<=$vlan_line; i++ )) 
+do
+
+one=`head -1 $HOME/ip.in`
+two=`head -1 $HOME/vlan.in`
+
+# Splits IP address 
+oct1=`echo $one | awk -F. '{print $1}'`
+oct2=`echo $one | awk -F. '{print $2}'`
+oct3=`echo $one | awk -F. '{print $3}'`
+oct4=`echo $one | awk -F. '{print $4}'`
+
+#uses last octect of IP to determine IP services.
+usestart4=`expr $oct4 + 1`
+uselast4=`expr $oct4 + 30`
+lastuse=$oct1.$oct2.$oct3.$uselast4
+routerip=`expr $oct4 + 1`
+routerip=$oct1.$oct2.$oct3.$routerip
+vlanip1=`expr $oct4 + 2`
+vlanipsw1=$oct1.$oct2.$oct3.$vlanip1
+firstuseoct=`expr $oct4 + 5`
+firstuse=$oct1.$oct2.$oct3.$firstuseoct
+vlanip2=`expr $oct4 + 3`
+vlanipsw2=$oct1.$oct2.$oct3.$vlanip2
+
+
+# Writing to switch
+echo "interface vlan $two" >> $HOME/switchconfigs1 
+echo "desc GTS_VLANS_2020"  >> $HOME/switchconfigs1
+echo "ip address $vlanipsw1/27" >> $HOME/switchconfigs1
+echo "ip virtual-router address $routerip" >> $HOME/switchconfigs1
+echo "###########################" >> $HOME/switchconfigs1
+
+echo "interface vlan $two" >> $HOME/switchconfigs2
+echo "desc GTS_VLANS_2020"  >> $HOME/switchconfigs2
+echo "ip address $vlanipsw2/27" >> $HOME/switchconfigs2
+echo "ip virtual-router address $routerip" >> $HOME/switchconfigs2
+echo "###########################" >> $HOME/switchconfigs2
+
+echo "VLAN $two	Usable IP $firstuse - $lastuse	Gateway $routerip Subnet Mask 255.255.255.224" >> $HOME/info 
+echo $two >> $HOME/vlan.out
+echo $routerip >> $HOME/router.out
+echo $firstuse >> $HOME/firstuse.out
+echo $lastuse >> $HOME/lastuse.out
+
+echo $one >> $HOME/ip.in
+echo $two >> $HOME/vlan.in
+sed -i -e "1d" $HOME/vlan.in
+sed -i -e "1d" $HOME/ip.in
+done
+echo "Script has completed. View Switch Configs at $HOME/switchconfigs1 and $HOME/switchconfigs2"
+rm -rf $HOME/vlan.in $HOME/ip.in
+
