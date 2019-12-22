@@ -1,4 +1,6 @@
 #!/bin/bash
+#Authored by Bosun Dare
+
 echo "Enter full path name of vlan file"
 read vlan_file
 if [ ! -f "$vlan_file" ]; then
