@@ -2,15 +2,12 @@
 #Script created by Bosun Dare. 
 
 
-
-echo "Enter full path name of vlan file"
-read vlan_file
+read -p "Enter full path name of vlan file: " vlan_file ; echo
 if [ ! -f "$vlan_file" ]; then
     echo "No such file!" >&2
     exit 1
 fi
-echo "Enter Full path name of Network Address File"
-read ip_file
+read -p "Enter Full path name of Network Address File: " ip_file ; echo
 if [ ! -f "$ip_file" ]; then
     echo "No such file!" >&2
     exit 1
@@ -36,7 +33,6 @@ touch $working_dir/switchconfigs2
 echo "Now writing configs to $working_dir/switchconfigs1 and $working_dir/switchconfigs2. You can tail the output to monitor with tail -f $working_dir/switchconfigs1"
 cp $vlan_file $working_dir/vlan.in
 cp $ip_file $working_dir/ip.in
-
 
 for (( i=1; i<=$vlan_line; i++ )) 
 do
@@ -88,6 +84,8 @@ echo $two >> $working_dir/vlan.in
 sed -i -e "1d" $working_dir/vlan.in
 sed -i -e "1d" $working_dir/ip.in
 done
+
 echo "Script has completed. View Switch Configs at $working_dir/switchconfigs1 and $working_dir/switchconfigs2"
+echo -e "\n    DONE: The script ran for ${SECONDS} seconds."
 rm -rf $working_dir/vlan.in $working_dir/ip.in
 
