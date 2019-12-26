@@ -4,12 +4,12 @@
 
 read -p "Enter full path name of vlan file: " vlan_file ; echo
 if [ ! -f "$vlan_file" ]; then
-    echo "No such file!" >&2
+    echo "File does not exist. Ensure you have created a vlan file with read permissions." >&2
     exit 1
 fi
 read -p "Enter Full path name of Network Address File: " ip_file ; echo
 if [ ! -f "$ip_file" ]; then
-    echo "No such file!" >&2
+    echo "File does not exist. Ensure you have created an IP file with read permissions." >&2
     exit 1
 fi
 
