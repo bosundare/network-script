@@ -7,7 +7,7 @@ After you supply both files, it would copy both files to your home directory and
 # Usage 
 git clone https://github.com/bosundare/network-script.git \
 cd network-script \
-chmod +x vlanfinal
-./vlanfinal
+chmod +x vlanfinal \
+./vlanfinal \
 
 Follow on-screen instructions
