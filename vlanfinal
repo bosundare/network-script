@@ -65,13 +65,13 @@ echo "interface vlan $two" >> $working_dir/switchconfigs1
 echo "desc GTS_VLANS_2020"  >> $working_dir/switchconfigs1
 echo "ip address $vlanipsw1/27" >> $working_dir/switchconfigs1
 echo "ip virtual-router address $routerip" >> $working_dir/switchconfigs1
-echo "###########################" >> $working_dir/switchconfigs1
+echo "!!!!" >> $working_dir/switchconfigs1
 
 echo "interface vlan $two" >> $working_dir/switchconfigs2
 echo "desc GTS_VLANS_2020"  >> $working_dir/switchconfigs2
 echo "ip address $vlanipsw2/27" >> $working_dir/switchconfigs2
 echo "ip virtual-router address $routerip" >> $working_dir/switchconfigs2
-echo "###########################" >> $working_dir/switchconfigs2
+echo "!!!!" >> $working_dir/switchconfigs2
 
 echo "VLAN $two	Usable IP $firstuse - $lastuse	Gateway $routerip Subnet Mask 255.255.255.224" >> $working_dir/info 
 echo $two >> $working_dir/vlan.out
