@@ -5,9 +5,9 @@ Before running, ensure you have both vlan list and Network IP list that you woul
 After you supply both files, it would copy both files to your home directory and create various files after running. 
 
 # Usage 
-```$ git clone https://github.com/bosundare/network-script.git \ ```
-```$ cd network-script \ ```
-```$ chmod +x vlanfinal \ ```
+```$ git clone https://github.com/bosundare/network-script.git  ``` \
+```$ cd network-script ``` \
+```$ chmod +x vlanfinal ``` \
 ```$ ./vlanfinal ```
 
 Follow on-screen instructions
